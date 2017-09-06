@@ -15,7 +15,16 @@
 use Pimcore\Tool;
 use Symfony\Component\HttpFoundation\Request;
 
-require_once __DIR__ . '/../pimcore/config/bootstrap.php';
+if (!defined('PIMCORE_PROJECT_ROOT')) {
+    define(
+        'PIMCORE_PROJECT_ROOT',
+        getenv('PIMCORE_PROJECT_ROOT')
+            ?: getenv('REDIRECT_PIMCORE_PROJECT_ROOT')
+            ?: realpath(__DIR__ . '/..')
+    );
+}
+
+require_once PIMCORE_PROJECT_ROOT . '/pimcore/config/bootstrap.php';
 
 $request = Request::createFromGlobals();
 
@@ -24,7 +33,7 @@ $request = Request::createFromGlobals();
 Tool::setCurrentRequest($request);
 
 /** @var \Pimcore\Kernel $kernel */
-$kernel = require_once __DIR__ . '/../pimcore/config/kernel.php';
+$kernel = require_once PIMCORE_PROJECT_ROOT . '/pimcore/config/kernel.php';
 
 // reset current request - will be read from request stack from now on
 Tool::setCurrentRequest(null);
