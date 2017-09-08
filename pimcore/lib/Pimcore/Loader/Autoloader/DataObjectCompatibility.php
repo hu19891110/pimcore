@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Pimcore
  *
@@ -14,26 +17,20 @@
 
 namespace Pimcore\Loader\Autoloader;
 
-class DataObjectCompatibility
+use Composer\Autoload\ClassLoader;
+
+class DataObjectCompatibility extends AbstractAutoloader
 {
     /**
-     * @var \Composer\Autoload\ClassLoader
+     * @var ClassLoader
      */
     protected $composerAutoloader;
 
-    /**
-     * @param \Composer\Autoload\ClassLoader $composerAutoloader
-     */
-    public function __construct(\Composer\Autoload\ClassLoader $composerAutoloader)
+    public function __construct(ClassLoader $composerAutoloader)
     {
         $this->composerAutoloader = $composerAutoloader;
     }
 
-    /**
-     * @param $class
-     *
-     * @return bool
-     */
     public function load($class)
     {
         if (strpos($class, 'Pimcore\\') === 0 && strpos($class, '\\Object\\')) {
@@ -55,6 +52,8 @@ class DataObjectCompatibility
                 return true;
             }
         }
+
+        return false;
     }
 
     /**
@@ -66,18 +65,5 @@ class DataObjectCompatibility
     protected function classExists($class, $autoload = true)
     {
         return class_exists($class, $autoload) || interface_exists($class, $autoload) || trait_exists($class, $autoload);
-    }
-
-    /**
-     * @param bool $prepend
-     */
-    public function register($prepend = false)
-    {
-        spl_autoload_register([$this, 'load'], true, $prepend);
-    }
-
-    public function unregister()
-    {
-        spl_autoload_unregister([$this, 'load']);
     }
 }

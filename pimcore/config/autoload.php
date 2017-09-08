@@ -27,6 +27,10 @@ if (version_compare(PHP_VERSION, '7.2.0', '<')) {
     $dataObjectCompatibilityLoader->register(true);
 }
 
+// legacy mapping loader aliases renamed classes
+$legacyMappingLoader = new \Pimcore\Loader\Autoloader\LegacyMapping();
+$legacyMappingLoader->register(false);
+
 // the following code is out of `app/autoload.php`
 // see also: https://github.com/symfony/symfony-demo/blob/master/app/autoload.php
 AnnotationRegistry::registerLoader([$loader, 'loadClass']);
